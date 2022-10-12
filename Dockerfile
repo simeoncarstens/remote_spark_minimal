@@ -10,7 +10,6 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /mwe
 
 COPY requirements.txt .
-# RUN apt-get update
 RUN apt-get -y install default-jdk
 RUN apt-get -y install vim
 RUN python -m venv .venv
@@ -19,5 +18,7 @@ RUN mkdir /jars
 ENV JAVA_HOME=/usr/lib/jvm/default-java
 COPY minimal.py .
 COPY set_remote_cluster_env.sh .
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-CMD ["python", "-i", "minimal.py"]
+ENTRYPOINT ["/entrypoint.sh"]
