@@ -13,12 +13,14 @@ def get_remote_spark_context() -> SparkContext:
       os.path.join(driver_classes_dirname, "hadoop-common.jar"),
       os.path.join(driver_classes_dirname, "hadoop-aws.jar"),
       os.path.join(driver_classes_dirname, "emrfs-hadoop-assembly-2.47.0.jar"),
+      os.path.join(driver_classes_dirname, "hadoop-lzo.jar")
     )
 
     # extra Java classes required for the executors (on the AWS EMR cluster, so paths are relative to the working directory there)
     executor_extra_classes = (
     '/usr/lib/hadoop/hadoop-common.jar',
     '/usr/lib/hadoop/hadoop-aws.jar',
+    '/usr/lib/hadoop-lzo/lib/hadoop-lzo.jar',
     '/usr/share/aws/emr/emrfs/lib/emrfs-hadoop-assembly-2.47.0.jar',
     '/usr/share/aws/emr/instance-controller/lib/stax2-api-3.1.4.jar',
     './hail-all-spark.jar'
@@ -43,3 +45,4 @@ def get_remote_spark_context() -> SparkContext:
 if __name__ == '__main__':
     spark = SparkSession(get_remote_spark_context())
     df = spark.read.option('delimiter', ',').csv('s3://simeon-hail-test/minimal_test.csv')
+    print(df.toPandas().head())
